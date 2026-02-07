@@ -85,6 +85,41 @@ public class AuthorRepositioryIntegrationTest {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    public void TestThatAuthorAgeLessThan(){
+        Author a = CreateTestAuthor();
+        Author b = CreateTestAuthorA();
+        Author c = CreateTestAuthorB();
+        Author d = CreateTestAuthorC();
+
+        underTest.save(a);
+        underTest.save(b);
+        underTest.save(c);
+        underTest.save(d);
+
+        Iterable<Author> result =  underTest.ageLessThan(50);
+
+
+        assertThat(result).containsExactly(b,c,d);
+    }
+    @Test
+    public void TestThatAuthrAgeGreateThan(){
+        Author a = CreateTestAuthor();
+        Author b = CreateTestAuthorA();
+        Author c = CreateTestAuthorB();
+        Author d = CreateTestAuthorC();
+
+        underTest.save(a);
+        underTest.save(b);
+        underTest.save(c);
+        underTest.save(d);
+
+        Iterable<Author> result =  underTest.ageGreaterThan(50);
+
+
+        assertThat(result).containsExactly(a);
+    }
 }
 
 

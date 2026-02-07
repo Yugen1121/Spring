@@ -101,6 +101,29 @@ public class BookDaoImplIntegrationTests {
 
         assertThat(result).isEmpty();
     }
+
+    @Test
+    public void TestThatBookByAuthor(){
+        Author a = CreateTestAuthor();
+        Author b = CreateTestAuthorA();
+        authorRepo.save(a);
+        authorRepo.save(b);
+
+        Book A = CreateTestBook(a);
+        Book B = CreateTestBookA(a);
+        Book C = CreateTestBookB(a);
+        Book D = CreateTestBookC(b);
+
+        underTest.save(A);
+        underTest.save(B);
+        underTest.save(C);
+        underTest.save(D);
+
+        Iterable<Book> result = underTest.BookByAuthor(a.getId());
+
+        assertThat(result).containsExactly(A,B,C);
+
+    }
 }
 
 
