@@ -1,7 +1,6 @@
-/*
+
 package com.example.Database.respositories;
 
-import com.example.Database.dao.AuthorDao;
 import com.example.Database.domain.Author;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,71 +20,73 @@ import static org.springframework.test.web.servlet.result.StatusResultMatchersEx
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class AuthorDaoImplIntegrationTests {
+public class AuthorRepositioryIntegrationTest {
 
-    private AuthorDaoImpl underTest;
-    @Autowired
-    private AuthorDao authorDao;
+    private AuthorRepository underTest;
+
 
     @Autowired
-    public AuthorDaoImplIntegrationTests(AuthorDaoImpl underTest){
+    public AuthorRepositioryIntegrationTest(AuthorRepository underTest) {
         this.underTest = underTest;
     }
 
 
-
     @Test
-    public void TestThatAuthorCanBeCreatedAndRetrieved(){
+    public void TestThatAuthorCanBeCreatedAndRetrieved() {
         Author author = CreateTestAuthor();
-        underTest.create(author);
-        Optional<Author> result = underTest.findOne(author.getId());
+        underTest.save(author);
+        Optional<Author> result = underTest.findById(author.getId());
         assertThat(result.isPresent());
         assertThat(result.get()).isEqualTo(author);
     }
 
+
     @Test
-    public void TestThatMultipleAuthorsCanBeCreatedAndRecalled(){
+    public void TestThatMultipleAuthorsCanBeCreatedAndRecalled() {
         Author a = CreateTestAuthor();
         Author b = CreateTestAuthorA();
         Author c = CreateTestAuthorB();
         Author d = CreateTestAuthorC();
-        underTest.create(a);
-        underTest.create(b);
-        underTest.create(c);
-        underTest.create(d);
-        List<Author> results = underTest.find();
+        underTest.save(a);
+        underTest.save(b);
+        underTest.save(c);
+        underTest.save(d);
+        Iterable<Author> results = underTest.findAll();
         assertThat(results)
                 .hasSize(4)
                 .containsExactly(a, b, c, d);
+
     }
 
     @Test
-    public void TestThatAuthorCanBeUpdated(){
+    public void TestThatAuthorCanBeUpdated() {
         Author a = CreateTestAuthor();
-        Author b = CreateTestAuthorA();
 
-        underTest.create(a);
+        underTest.save(a);
 
+        a.setName("Hello");
+        underTest.save(a);
 
-        underTest.update(1L, b);
-
-        Optional<Author> result = underTest.findOne(2L);
+        Optional<Author> result = underTest.findById(a.getId());
 
         assertThat(result.isPresent());
-        assertThat(result.get()).isEqualTo(b);
+        assertThat(result.get()).isEqualTo(a);
     }
 
     @Test
     public void TestThatAuthorCanBeDeleted(){
         Author author = CreateTestAuthor();
 
-        underTest.create(author);
+        underTest.save(author);
 
-        underTest.delete(author.getId());
+        underTest.deleteById(author.getId());
 
-        Optional<Author> result = underTest.findOne(author.getId());
+        Optional<Author> result = underTest.findById(author.getId());
 
         assertThat(result).isEmpty();
     }
+}
 
-}*/
+
+
+
